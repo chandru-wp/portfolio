@@ -47,7 +47,7 @@ function ReplyControls({ msg, onUpdate }) {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('projects');
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -375,7 +375,7 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
           <p className="text-gray-600 mb-6">You need admin privileges to access this page.</p>
           <button
-            onClick={() => { window.location.pathname = '/'; }}
+            onClick={() => { window.location.href = '/'; }}
             className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all"
           >
             Go Home
@@ -400,15 +400,25 @@ export default function AdminDashboard() {
             <h1 className="text-5xl font-black text-gray-900 mb-2">Admin Dashboard</h1>
             <p className="text-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent font-bold">Manage Your Portfolio Content</p>
           </div>
-          <button
-            onClick={() => { window.location.pathname = '/'; }}
-            className="text-gray-600 hover:text-gray-800 transition-colors p-2 rounded-md bg-white/60 backdrop-blur hover:bg-white/80"
-            aria-label="Close admin dashboard"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex gap-3 items-center">
+            <button
+              onClick={() => { window.location.href = '/'; }}
+              className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors rounded-lg bg-white/60 backdrop-blur hover:bg-white/80 font-semibold"
+              aria-label="Go to home page"
+            >
+               Home
+            </button>
+            <button
+              onClick={() => { 
+                logout(); 
+                window.location.href = '/'; 
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+              aria-label="Sign out"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         {/* Message */}
@@ -925,8 +935,22 @@ export default function AdminDashboard() {
         )}
         
         {/* Sign out */}
-        <div className="mt-6 text-center">
-          <button onClick={() => { window.location.pathname = '/logout'; }} className="text-blue-600 font-semibold hover:text-blue-800">Sign out</button>
+        <div className="mt-6 text-center flex gap-4 justify-center">
+          <button 
+            onClick={() => { window.location.href = '/'; }} 
+            className="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 border border-blue-200 transition-all"
+          >
+            Go to Home
+          </button>
+          <button 
+            onClick={() => { 
+              logout(); 
+              window.location.href = '/'; 
+            }} 
+            className="px-6 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+          >
+            Sign Out
+          </button>
         </div>
 
       </div>
