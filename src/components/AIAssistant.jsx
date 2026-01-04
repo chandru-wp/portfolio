@@ -133,10 +133,9 @@ export default function AIAssistant({ isOpen, onClose }) {
       utterance.voice = maleVoice;
     }
     
-    utterance.rate = 1.0;
+    utterance.rate = 0.6; // Slower speech rate for better understanding
     utterance.pitch = 0.9;
     utterance.volume = 1.0;
-    
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
