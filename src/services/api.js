@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+// Use Render backend for both development and production
+const API_URL = 'https://portfolio-backend-ykvn.onrender.com';
 
 // Portfolio API
 export const portfolioAPI = {

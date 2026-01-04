@@ -314,16 +314,18 @@ export default function AIAssistant({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[620px] bg-white/70 backdrop-blur-xl flex flex-col z-50 shadow-[0_20px_70px_-24px_rgba(67,56,202,0.45)] rounded-2xl border border-white/50">
+    <div className="fixed bottom-6 right-6 w-96 h-[620px] bg-white flex flex-col z-50 shadow-2xl rounded-2xl border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-5 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
-            <img src={aiImage} alt="AI Assistant" className="w-full h-full object-cover" />
+          <div className="w-10 h-10 bg-white/30 rounded-full flex items-center justify-center overflow-hidden backdrop-blur-sm">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0m-9 5h.01M9 9h.01" />
+            </svg>
           </div>
           <div>
-            <h3 className="font-semibold">Neurova AI</h3>
-            <p className="text-xs opacity-80">Ask me anything! 🎤</p>
+            <h3 className="font-bold text-lg">Neurova AI</h3>
+            <p className="text-xs opacity-90">Portfolio Assistant</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -364,20 +366,20 @@ export default function AIAssistant({ isOpen, onClose }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white/70">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((msg, index) => (
           <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} gap-2`}>
-            <div className={`max-w-[80%] p-3 rounded-lg ${
+            <div className={`max-w-[80%] p-3 rounded-xl ${
               msg.role === 'user' 
-                ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white' 
-                : 'bg-white text-gray-800 border border-gray-200'
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-none' 
+                : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
             }`}>
-              <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+              <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
             </div>
             {msg.role === 'assistant' && (
               <button
                 onClick={() => speakText(msg.content)}
-                className="text-gray-400 hover:text-blue-600 transition-colors p-2 self-start"
+                className="text-gray-400 hover:text-blue-600 hover:bg-gray-100 transition-all duration-200 p-2 rounded-lg self-start"
                 title="Speak this message"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -388,29 +390,29 @@ export default function AIAssistant({ isOpen, onClose }) {
           </div>
         ))}
         {isTyping && (
-          <div className="flex items-center gap-2 text-gray-500">
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
+          <div className="flex items-center gap-2 text-gray-500 ml-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-100"></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-200"></div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-white/60 bg-white/85 rounded-b-2xl space-y-2">
-        <div className="flex items-center gap-2 text-xs text-gray-500">
+      <div className="p-4 border-t border-gray-200 bg-white rounded-b-2xl space-y-2">
+        <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
           {isListening ? (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" /> Listening...
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-medium">
               🎙️ Tap mic to speak
             </span>
           )}
           {!micSupported && (
-            <span className="text-red-500">Mic not supported in this browser.</span>
+            <span className="text-red-500 font-medium">Mic not supported</span>
           )}
           {micError && (
             <span className="inline-flex items-center gap-2 text-red-500">
@@ -431,12 +433,12 @@ export default function AIAssistant({ isOpen, onClose }) {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask me anything..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
           />
           <button
             onClick={isListening ? stopListening : startListening}
             disabled={!micSupported}
-            className={`pill-btn border border-white/60 ${isListening ? 'bg-red-50 text-red-600' : ''} ${!micSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${isListening ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'} ${!micSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
             title={isListening ? 'Stop listening' : 'Start voice input'}
           >
             {isListening ? '⏹' : '🎙️'}
@@ -444,7 +446,7 @@ export default function AIAssistant({ isOpen, onClose }) {
           <button
             onClick={() => handleSend()}
             disabled={!input.trim()}
-            className={`primary-btn ${!input.trim() ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

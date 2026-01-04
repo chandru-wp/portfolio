@@ -8,19 +8,21 @@ export default function Skills() {
   const [error, setError] = useState('');
   const { isAdmin } = useAuth();
 
+  // Fetch only from backend
   useEffect(() => {
     const load = async () => {
       try {
         const data = await skillsAPI.getAll();
-        // Sort by category order: Database, Frontend, Backend
-        const sorted = data.sort((a, b) => {
-          const order = { 'Data base': 0, 'Database': 0, 'Frontend': 1, 'Backend': 2 };
-          return (order[a.category] ?? 999) - (order[b.category] ?? 999);
-        });
-        setGroups(sorted);
+        if (data && data.length > 0) {
+          const sorted = data.sort((a, b) => {
+            const order = { 'Data base': 0, 'Database': 0, 'Frontend': 1, 'Backend': 2 };
+            return (order[a.category] ?? 999) - (order[b.category] ?? 999);
+          });
+          setGroups(sorted);
+        }
       } catch (err) {
-        console.error('Failed to load skills:', err);
-        setError('Unable to load skills from server.');
+        setError('Failed to load skills from backend');
+        console.error('Skills API Error:', err);
       } finally {
         setLoading(false);
       }

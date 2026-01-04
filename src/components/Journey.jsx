@@ -12,6 +12,7 @@ export default function JourneyV2() {
   const [error, setError] = useState('');
   const { isAdmin } = useAuth();
 
+  // Fetch only from backend
   useEffect(() => {
     const load = async () => {
       try {
@@ -19,11 +20,19 @@ export default function JourneyV2() {
           experienceAPI.getAll(),
           educationAPI.getAll()
         ]);
-        setExperience(expData);
-        setEducation(eduData);
+        if (expData && expData.length > 0) {
+          setExperience(expData);
+        } else {
+          setError('No experience data found on backend');
+        }
+        if (eduData && eduData.length > 0) {
+          setEducation(eduData);
+        } else {
+          setError(prev => prev ? prev + ', No education data' : 'No education data');
+        }
       } catch (err) {
-        console.error('Failed to load journey data:', err);
-        setError('Unable to load journey data from server.');
+        setError('Failed to load journey data from backend');
+        console.error('Journey API Error:', err);
       } finally {
         setLoading(false);
       }

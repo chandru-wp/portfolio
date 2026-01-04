@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { FiTerminal } from 'react-icons/fi';
 import AIAssistant from './AIAssistant';
+import fbd from '../assets/ai_image.png';
 
 export default function FloatingAIButton() {
   const [showAI, setShowAI] = useState(false);
@@ -12,12 +14,16 @@ export default function FloatingAIButton() {
         onClick={() => setShowAI(true)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-            className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-full shadow-2xl hover:scale-110 hover:shadow-xl transition-all duration-300 flex items-center justify-center text-3xl z-40 group"
+        aria-label="Open AI assistant"
+        className="fixed bottom-8 right-8 w-20 h-20 rounded-full shadow-2xl hover:scale-125 hover:shadow-3xl transition-transform duration-300 flex items-center justify-center z-40 group overflow-hidden"
         style={{
-          animation: 'bounce 2s infinite'
+          animation: 'bounce 2s infinite',
+          backgroundImage: `url(${fbd})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
-        🤖
+  
         
         {/* Tooltip */}
         {isHovered && (
@@ -37,7 +43,7 @@ export default function FloatingAIButton() {
             transform: translateY(0);
           }
           50% {
-            transform: translateY(-10px);
+            transform: translateY(-15px);
           }
         }
       `}</style>

@@ -22,7 +22,6 @@ export default function Home() {
       <section className="animate-fadeIn"><Hero /></section>
       <section className="animate-fadeIn delay-200"><Skills /></section>
       <section className="animate-fadeIn delay-200"><Projects /></section>
-     
    
       <section className="animate-fadeIn delay-500"><Journey /></section>
       <section className="animate-fadeIn delay-600"><Contact /></section>
