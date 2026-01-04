@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import aiImage from '../assets/ai_image.png';
-import { profileAPI, skillsAPI, experienceAPI, educationAPI, portfolioAPI } from '../services/api';
+import { profileAPI, skillsAPI, experienceAPI, educationAPI, portfolioAPI, aiAPI } from '../services/api';
 export default function AIAssistant({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
     {
@@ -58,13 +58,14 @@ export default function AIAssistant({ isOpen, onClose }) {
           portfolioAPI.getAll()
         ]);
 
-        const skillMap = {
-          frontend: skills.find((s) => s.category?.toLowerCase().includes('front'))?.items || portfolioKnowledge.skills.frontend,
-          backend: skills.find((s) => s.category?.toLowerCase().includes('back'))?.items || portfolioKnowledge.skills.backend,
-          database: skills.find((s) => s.category?.toLowerCase().includes('database'))?.items || portfolioKnowledge.skills.database,
-          cloud: skills.find((s) => s.category?.toLowerCase().includes('cloud'))?.items || portfolioKnowledge.skills.cloud,
-          aiml: skills.find((s) => s.category?.toLowerCase().includes('ai'))?.items || portfolioKnowledge.skills.aiml,
-        };
+        // Build skills map from all skill groups, not just specific categories
+        const skillMap = {};
+        if (skills && Array.isArray(skills)) {
+          skills.forEach(skillGroup => {
+            const category = skillGroup.category?.toLowerCase() || 'other';
+            skillMap[category] = skillGroup.items || [];
+          });
+        }
 
         setPortfolioKnowledge((prev) => ({
           ...prev,
@@ -73,17 +74,13 @@ export default function AIAssistant({ isOpen, onClose }) {
           phone: profile?.phone || prev.phone,
           about: profile?.about || prev.about,
           skills: skillMap,
+          allSkillGroups: skills || [], // Store all skill groups for AI to display
           experience: exp || prev.experience,
           education: edu || prev.education,
-          projects: projects?.map((p) => ({
-            name: p.title,
-            description: p.description,
-            github: p.github,
-            website: p.website,
-            status: 'Completed'
-          })) || prev.projects
+          projects: projects || prev.projects
         }));
       } catch (err) {
+        console.error('Error loading portfolio data:', err);
         // Keep defaults on failure
       } finally {
         setLoadingData(false);
@@ -116,7 +113,7 @@ export default function AIAssistant({ isOpen, onClose }) {
     
     // Strip icons/emojis from spoken text so only content is read aloud
     const sanitized = (text || '')
-      .replace(/[🎨⚙️💾☁️🤖]/g, '')
+      .replace(/[🎨⚙️💾☁️✨ 🤖]/g, '')
       .replace(/\s{2,}/g, ' ')
       .trim();
 
@@ -213,7 +210,25 @@ export default function AIAssistant({ isOpen, onClose }) {
     }
   };
 
-  const generateResponse = (userMessage) => {
+  const generateResponse = async (userMessage) => {
+    try {
+      // Prepare context from portfolio knowledge
+      const context = {
+        portfolioData: portfolioKnowledge,
+        userName: user?.username,
+      };
+
+      // Call the backend AI API
+      const result = await aiAPI.query(userMessage, context);
+      return result.answer || "I couldn't generate a response. Please try again.";
+    } catch (error) {
+      console.error('AI Response error:', error);
+      // Fallback to local response generation if API fails
+      return generateLocalResponse(userMessage);
+    }
+  };
+
+  const generateLocalResponse = (userMessage) => {
     const lowerMessage = userMessage.toLowerCase();
 
     // Greetings
@@ -221,70 +236,136 @@ export default function AIAssistant({ isOpen, onClose }) {
       return `Hello${user ? ` ${user.username}` : ''}! 👋 I'm here to tell you about Chandru's portfolio. You can ask me about:\n\n• Skills and technologies\n• Work experience\n• Projects\n• Education\n• Contact information\n\nWhat would you like to know?`;
     }
 
-    // Skills
+    // Skills - Display all skill groups from database
     if (lowerMessage.includes('skill') || lowerMessage.includes('technology') || lowerMessage.includes('tech stack')) {
-      const skills = portfolioKnowledge.skills || {};
-      const frontend = skills.frontend || [];
-      const backend = skills.backend || [];
-      const database = skills.database || [];
-      const cloud = skills.cloud || [];
-      const aiml = skills.aiml || [];
-
-      if (!frontend.length && !backend.length && !database.length && !cloud.length && !aiml.length) {
-        return "I'm still loading skills from the server. Please try again in a moment.";
+      let skillResponse = `Here are Chandru's skills:\n\n`;
+      
+      // Use all skill groups from database if available
+      if (portfolioKnowledge.allSkillGroups && Array.isArray(portfolioKnowledge.allSkillGroups) && portfolioKnowledge.allSkillGroups.length > 0) {
+        portfolioKnowledge.allSkillGroups.forEach(skillGroup => {
+          const categoryLower = skillGroup.category?.toLowerCase() || '';
+          let emoji = '✨';
+          
+          // Assign emoji based on category
+          if (categoryLower.includes('front')) emoji = '🎨';
+          else if (categoryLower.includes('back')) emoji = '⚙️';
+          else if (categoryLower.includes('database') || categoryLower.includes('db')) emoji = '💾';
+          else if (categoryLower.includes('cloud')) emoji = '☁️';
+          else if (categoryLower.includes('ai') || categoryLower.includes('ml')) emoji = '🤖';
+          else if (categoryLower.includes('tool') || categoryLower.includes('dev')) emoji = '🔧';
+          
+          const items = skillGroup.items && Array.isArray(skillGroup.items) ? skillGroup.items.join(', ') : 'N/A';
+          skillResponse += `${emoji} ${skillGroup.category}: ${items}\n`;
+        });
+      } else {
+        // Fallback to skills map
+        const skills = portfolioKnowledge.skills || {};
+        const skillEmojis = {
+          'frontend': '🎨',
+          'backend': '⚙️',
+          'database': '💾',
+          'cloud': '☁️',
+          'aiml': '🤖'
+        };
+        
+        Object.entries(skills).forEach(([category, items]) => {
+          if (Array.isArray(items) && items.length > 0) {
+            const emoji = skillEmojis[category] || '✨';
+            skillResponse += `${emoji} ${category.charAt(0).toUpperCase() + category.slice(1)}: ${items.join(', ')}\n`;
+          }
+        });
+        
+        // If still empty, show defaults
+        if (skillResponse === `Here are Chandru's skills:\n\n`) {
+          skillResponse += `🎨 Frontend: React, JavaScript, Tailwind CSS, Vite, TypeScript, HTML, CSS\n⚙️ Backend: Node.js, Express, Python, Flask, Firebase\n💾 Database: PostgreSQL, MongoDB\n🤖 AI/ML: Machine Learning, Data Science`;
+        }
       }
-
-      return `Here are Chandru's skills:\n\n🎨 Frontend: ${frontend.join(', ')}\n\n⚙️ Backend: ${backend.join(', ')}\n\n💾 Database: ${database.join(', ')}\n\n☁️ Cloud: ${cloud.join(', ')}\n\n🤖 AI/ML: ${aiml.join(', ')}`;
+      
+      return skillResponse;
     }
 
-    // Experience
+    // Experience - Display from database
     if (lowerMessage.includes('experience') || lowerMessage.includes('work') || lowerMessage.includes('job')) {
-      return `Here's Chandru's work experience:\n\n${portfolioKnowledge.experience.map(exp => 
-        `📍 ${exp.role} at ${exp.company}\n${exp.duration}\n${exp.description}\nTech: ${exp.tech.join(', ')}`
-      ).join('\n\n')}`;
+      if (portfolioKnowledge.experience && Array.isArray(portfolioKnowledge.experience) && portfolioKnowledge.experience.length > 0) {
+        let expResponse = `Here's Chandru's work experience:\n\n`;
+        portfolioKnowledge.experience.forEach((exp, idx) => {
+          expResponse += `${idx + 1}. 📍 ${exp.role} at ${exp.company}\n`;
+          if (exp.duration) expResponse += `   ⏱️ ${exp.duration}\n`;
+          if (exp.description) expResponse += `   📋 ${exp.description}\n`;
+          if (exp.tech && Array.isArray(exp.tech)) expResponse += `   🛠️ Tech: ${exp.tech.join(', ')}\n`;
+          expResponse += '\n';
+        });
+        return expResponse;
+      }
+      return `💼 Chandru has experience in:\n\n• Full-stack web development\n• Backend system architecture\n• Frontend development with React\n• Database design and optimization\n• Cloud deployment\n• API development\n\nWell-equipped to handle complex projects!`;
     }
 
-    // Projects
+    // Projects - Display from database
     if (lowerMessage.includes('project')) {
-      if (lowerMessage.includes('uptimeeye')) {
-        const project = portfolioKnowledge.projects[0];
-        return `🚀 ${project.name}\n\nType: ${project.type}\nStatus: ${project.status}\n\n${project.description}\n\nKey Features:\n${project.features.map(f => `• ${f}`).join('\n')}`;
+      if (portfolioKnowledge.projects && Array.isArray(portfolioKnowledge.projects) && portfolioKnowledge.projects.length > 0) {
+        let projResponse = `Here are Chandru's projects:\n\n`;
+        portfolioKnowledge.projects.forEach((proj, idx) => {
+          projResponse += `${idx + 1}. 🚀 ${proj.title || proj.name}\n`;
+          if (proj.description) projResponse += `   📝 ${proj.description}\n`;
+          if (proj.tech && Array.isArray(proj.tech)) projResponse += `   🛠️ Tech: ${proj.tech.join(', ')}\n`;
+          if (proj.github) projResponse += `   🐙 GitHub: ${proj.github}\n`;
+          if (proj.website) projResponse += `   🌐 Website: ${proj.website}\n`;
+          projResponse += '\n';
+        });
+        return projResponse;
       }
-      if (lowerMessage.includes('rydirect')) {
-        const project = portfolioKnowledge.projects[1];
-        return `🔗 ${project.name}\n\nType: ${project.type}\nStatus: ${project.status}\n\n${project.description}\n\nKey Features:\n${project.features.map(f => `• ${f}`).join('\n')}`;
-      }
-      if (lowerMessage.includes('mymind') || lowerMessage.includes('nyra')) {
-        const project = portfolioKnowledge.projects[2];
-        return `🤖 ${project.name}\n\nType: ${project.type}\nStatus: ${project.status}\n\n${project.description}\n\nKey Features:\n${project.features.map(f => `• ${f}`).join('\n')}`;
-      }
-      return `Here are Chandru's notable projects:\n\n${portfolioKnowledge.projects.map((proj, idx) => 
-        `${idx + 1}. ${proj.name} (${proj.type})\n   ${proj.description}\n   Status: ${proj.status}`
-      ).join('\n\n')}\n\nAsk about a specific project for more details!`;
+      return `Here are Chandru's notable projects:\n\n1. 🚀 UptimeEye - Uptime monitoring platform\n2. 🔗 Rydirect - URL shortening service\n3. 🤖 MyMind (NYRA) - AI-powered assistant\n\nEach demonstrates full-stack expertise!`;
     }
 
-    // Education
-    if (lowerMessage.includes('education') || lowerMessage.includes('degree') || lowerMessage.includes('college') || lowerMessage.includes('study')) {
-      return `📚 Education:\n\n${portfolioKnowledge.education.map(edu => 
-        `🎓 ${edu.degree}\n${edu.institution} (${edu.year})${edu.cgpa ? `\nCGPA: ${edu.cgpa}` : ''}\nHighlights: ${edu.highlights.join(', ')}`
-      ).join('\n\n')}`;
+    // Education - Display from database
+    if (lowerMessage.includes('education') || lowerMessage.includes('degree') || lowerMessage.includes('college') || lowerMessage.includes('study') || lowerMessage.includes('university')) {
+      if (portfolioKnowledge.education && Array.isArray(portfolioKnowledge.education) && portfolioKnowledge.education.length > 0) {
+        let eduResponse = `📚 Chandru's Education:\n\n`;
+        portfolioKnowledge.education.forEach((edu, idx) => {
+          eduResponse += `${idx + 1}. 🎓 ${edu.degree}\n`;
+          if (edu.institution) eduResponse += `   🏫 ${edu.institution}\n`;
+          if (edu.year) eduResponse += `   📅 ${edu.year}\n`;
+          if (edu.cgpa) eduResponse += `   ⭐ CGPA: ${edu.cgpa}\n`;
+          if (edu.highlights && Array.isArray(edu.highlights)) eduResponse += `   🏆 Highlights: ${edu.highlights.join(', ')}\n`;
+          eduResponse += '\n';
+        });
+        return eduResponse;
+      }
+      return `📚 Education & Learning:\n\n• Strong academic background\n• Continuous learning in new technologies\n• Self-taught through real-world projects\n• Active in tech communities\n\nFocuses on practical, hands-on learning!`;
     }
 
     // Contact
-    if (lowerMessage.includes('contact') || lowerMessage.includes('email') || lowerMessage.includes('phone') || lowerMessage.includes('reach')) {
-      return `📞 Contact Information:\n\n📧 Email: ${portfolioKnowledge.email}\n📱 Phone: ${portfolioKnowledge.phone}\n\nFeel free to reach out for collaborations or opportunities!`;
+    if (lowerMessage.includes('contact') || lowerMessage.includes('email') || lowerMessage.includes('phone') || lowerMessage.includes('reach') || lowerMessage.includes('hire')) {
+      let contactInfo = `📞 Contact Information:\n\n`;
+      if (portfolioKnowledge.email) contactInfo += `📧 Email: ${portfolioKnowledge.email}\n`;
+      if (portfolioKnowledge.phone) contactInfo += `📱 Phone: ${portfolioKnowledge.phone}\n`;
+      contactInfo += `\n💼 Available for: Freelance, Full-time, Consultations, Mentoring\n\nFeel free to reach out!`;
+      return contactInfo;
     }
 
     // About
-    if (lowerMessage.includes('about') || lowerMessage.includes('who') || lowerMessage.includes('introduce')) {
-      return `👤 About ${portfolioKnowledge.name}:\n\n${portfolioKnowledge.about}\n\n${portfolioKnowledge.email}\n${portfolioKnowledge.phone}`;
+    if (lowerMessage.includes('about') || lowerMessage.includes('who') || lowerMessage.includes('introduce') || lowerMessage.includes('bio')) {
+      let aboutResponse = `👤 About ${portfolioKnowledge.name || 'Chandru'}:\n\n`;
+      if (portfolioKnowledge.about) {
+        aboutResponse += `${portfolioKnowledge.about}\n\n`;
+      } else {
+        aboutResponse += `Full-stack developer passionate about building scalable applications and solving complex technical problems.\n\n`;
+      }
+      if (portfolioKnowledge.email) aboutResponse += `📧 ${portfolioKnowledge.email}\n`;
+      if (portfolioKnowledge.phone) aboutResponse += `📱 ${portfolioKnowledge.phone}\n`;
+      return aboutResponse;
+    }
+
+    // Help
+    if (lowerMessage.includes('help') || lowerMessage.includes('what can')) {
+      return `🤖 I can help you learn about:\n\n• 💼 Work Experience\n• 🚀 Projects\n• 🛠️ Skills & Technologies\n• 🎓 Education\n• 📞 Contact Information\n\nJust ask me anything specific!`;
     }
 
     // Default response
-    return `I can help you learn about:\n\n• 💼 Work Experience\n• 🚀 Projects (UptimeEye, Rydirect, MyMind)\n• 🛠️ Skills & Technologies\n• 🎓 Education\n• 📞 Contact Information\n\nJust ask me anything specific!`;
+    return `I can help you learn about:\n\n• 💼 Work Experience\n• 🚀 Projects\n• 🛠️ Skills & Technologies\n• 🎓 Education\n• 📞 Contact Information\n\nJust ask me anything specific!`;
   };
 
-  const handleSend = (forcedMessage) => {
+  const handleSend = async (forcedMessage) => {
     const text = (forcedMessage ?? input).trim();
     if (!text) return;
 
@@ -294,14 +375,19 @@ export default function AIAssistant({ isOpen, onClose }) {
     stopListening();
     setIsTyping(true);
 
-    setTimeout(() => {
-      const response = generateResponse(userMessage);
+    try {
+      const response = await generateResponse(userMessage);
       setMessages(prev => [...prev, { role: 'assistant', content: response }]);
-      setIsTyping(false);
       
       // Speak the response
       speakText(response);
-    }, 500);
+    } catch (error) {
+      console.error('Error in handleSend:', error);
+      const errorResponse = "Sorry, I encountered an error processing your question. Please try again.";
+      setMessages(prev => [...prev, { role: 'assistant', content: errorResponse }]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleKeyPress = (e) => {

@@ -262,3 +262,22 @@ export const authAPI = {
     return response.json();
   }
 };
+// AI Assistant API
+export const aiAPI = {
+  // Query AI for answers
+  query: async (question, context = {}) => {
+    try {
+      const response = await fetch(`${API_URL}/api/ai-query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, context })
+      });
+      
+      if (!response.ok) throw new Error('Failed to get AI response');
+      return response.json();
+    } catch (error) {
+      console.error('AI Query error:', error);
+      throw error;
+    }
+  }
+};
