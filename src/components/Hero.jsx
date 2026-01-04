@@ -75,7 +75,7 @@ export default function Hero() {
             {profile.name || "Chandru K"}
           </h1>
 
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mt-2 md:mt-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent font-bold tracking-wide whitespace-normal break-words w-full">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mt-2 md:mt-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent font-bold tracking-wide whitespace-normal break-words">
             {displayedText}
             <span className="inline-block w-1 bg-blue-100 animate-pulse ml-1">
               &nbsp;
@@ -138,7 +138,7 @@ export default function Hero() {
         {/* RIGHT IMAGE */}
         <div className="flex justify-center mt-8 md:mt-0">
           <div className="relative group">
-            <div className="absolute inset-0 w-48 sm:w-60 md:w-72 lg:w-80 h-48 sm:h-60 md:h-72 lg:h-80 rounded-full bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 blur-3xl opacity-50 group-hover:opacity-70 transition-all duration-500"></div>
+            <div className="absolute inset-0 w-48 sm:w-60 md:w-72 lg:w-80 h-48 sm:h-60 md:h-72 lg:h-80 rounded-full bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 blur-3xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
             <img
               src={vijayImage}
               alt="Actor Vijay"

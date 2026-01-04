@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   
   const { user, isAdmin } = useAuth();
 
@@ -41,7 +43,7 @@ export default function Navbar() {
         {/* Left: Logo + Welcome */}
         <div className="flex items-center gap-4">
           <div
-            className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent tracking-widest cursor-pointer
+            className="text-3xl md:text-4xl font-extrabold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent tracking-widest cursor-pointer
             hover:scale-110 hover:rotate-3 hover:text-white transition-all duration-500"
             onClick={() => handleScrollTo("about")}
           >
@@ -64,7 +66,7 @@ export default function Navbar() {
                 className="relative px-2 py-1 group-hover:text-indigo-700 transition-all duration-300"
               >
                 {item}
-                <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-500"></span>
+                <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-linear-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-500"></span>
                 <span className="absolute inset-x-0 -bottom-2 h-1.5 bg-indigo-500/20 opacity-0 group-hover:opacity-100 blur-md transition-all duration-500"></span>
               </span>
             </li>
@@ -72,7 +74,7 @@ export default function Navbar() {
           {isAdmin && (
             <li className="group relative cursor-pointer">
               <button
-                onClick={() => { window.location.pathname = '/admin'; }}
+                onClick={() => { navigate('/admin'); }}
                 className="px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                  Admin
@@ -100,7 +102,7 @@ export default function Navbar() {
             {navItems.map((item) => (
               <li
                 key={item}
-                className="text-center py-3 hover:bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl transition-all duration-300 shadow-sm"
+                className="text-center py-3 hover:bg-linear-to-r from-blue-100 to-purple-100 rounded-xl transition-all duration-300 shadow-sm"
               >
                 <span
                   className="cursor-pointer hover:text-blue-600 transition-all duration-300"
@@ -115,10 +117,10 @@ export default function Navbar() {
               <li className="text-center py-3">
                 <button
                   onClick={() => {
-                    window.location.pathname = '/admin';
+                    navigate('/admin');
                     setOpen(false);
                   }}
-                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="px-6 py-2 bg-linear-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   ⚙️ Admin
                 </button>

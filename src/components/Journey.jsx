@@ -69,7 +69,7 @@ export default function JourneyV2() {
           </div>
         )}
 
-        <h2 className="text-5xl md:text-6xl font-extrabold mb-12 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-lg animate-fadeIn whitespace-normal break-words">
+        <h2 className="text-5xl md:text-6xl font-extrabold mb-12 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-lg animate-fadeIn whitespace-normal wrap-break-word">
           My Journey
         </h2>
 

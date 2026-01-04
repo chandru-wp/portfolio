@@ -33,7 +33,7 @@ export default function GitHubProfile() {
 
   if (loading) {
     return (
-      <section className="relative min-h-screen py-28 bg-gradient-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] flex items-center justify-center">
+      <section className="relative min-h-screen py-28 bg-linear-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
           <p className="text-gray-600 text-lg font-semibold">Loading GitHub profile...</p>
@@ -44,7 +44,7 @@ export default function GitHubProfile() {
 
   if (error || !profile) {
     return (
-      <section className="relative min-h-screen py-28 bg-gradient-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] flex items-center justify-center">
+      <section className="relative min-h-screen py-28 bg-linear-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] flex items-center justify-center">
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl border-2 border-red-200 p-8 max-w-md">
           <p className="text-red-600 text-lg font-semibold text-center">{error || 'Profile not found'}</p>
         </div>
@@ -55,7 +55,7 @@ export default function GitHubProfile() {
   return (
     <section
       id="github-profile"
-      className="relative min-h-screen py-28 bg-gradient-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] overflow-hidden"
+      className="relative min-h-screen py-28 bg-linear-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] overflow-hidden"
     >
       {/* Background Glows */}
       <div className="absolute inset-0 -z-10">
@@ -150,7 +150,7 @@ export default function GitHubProfile() {
               {/* Stats Grid */}
               <div className="grid grid-cols-2 gap-4">
                 {/* Public Repos */}
-                <div className="group p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border-2 border-blue-200 hover:shadow-lg transition-all hover:border-blue-400 cursor-pointer">
+                <div className="group p-6 bg-linear-to-br from-blue-50 to-blue-100 rounded-2xl border-2 border-blue-200 hover:shadow-lg transition-all hover:border-blue-400 cursor-pointer">
                   <p className="text-3xl md:text-4xl font-black text-blue-600 mb-2">
                     {profile.public_repos}
                   </p>
@@ -160,7 +160,7 @@ export default function GitHubProfile() {
                 </div>
 
                 {/* Followers */}
-                <div className="group p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border-2 border-purple-200 hover:shadow-lg transition-all hover:border-purple-400 cursor-pointer">
+                <div className="group p-6 bg-linear-to-br from-purple-50 to-purple-100 rounded-2xl border-2 border-purple-200 hover:shadow-lg transition-all hover:border-purple-400 cursor-pointer">
                   <p className="text-3xl md:text-4xl font-black text-purple-600 mb-2">
                     {profile.followers}
                   </p>
@@ -170,7 +170,7 @@ export default function GitHubProfile() {
                 </div>
 
                 {/* Following */}
-                <div className="group p-6 bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-2xl border-2 border-cyan-200 hover:shadow-lg transition-all hover:border-cyan-400 cursor-pointer">
+                <div className="group p-6 bg-linear-to-br from-cyan-50 to-cyan-100 rounded-2xl border-2 border-cyan-200 hover:shadow-lg transition-all hover:border-cyan-400 cursor-pointer">
                   <p className="text-3xl md:text-4xl font-black text-cyan-600 mb-2">
                     {profile.following}
                   </p>
@@ -178,7 +178,7 @@ export default function GitHubProfile() {
                 </div>
 
                 {/* Gists */}
-                <div className="group p-6 bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl border-2 border-pink-200 hover:shadow-lg transition-all hover:border-pink-400 cursor-pointer">
+                <div className="group p-6 bg-linear-to-br from-pink-50 to-pink-100 rounded-2xl border-2 border-pink-200 hover:shadow-lg transition-all hover:border-pink-400 cursor-pointer">
                   <p className="text-3xl md:text-4xl font-black text-pink-600 mb-2">
                     {profile.public_gists}
                   </p>
@@ -249,7 +249,7 @@ export default function GitHubProfile() {
                     href={latestRepo.html_url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all hover:scale-105 text-center"
+                    className="px-6 py-2 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all hover:scale-105 text-center"
                   >
                     Open Repo
                   </a>
@@ -268,7 +268,7 @@ export default function GitHubProfile() {
 
       {/* Footer Section */}
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 mt-16">
-        <div className="bg-gradient-to-r from-white/90 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 p-8">
+        <div className="bg-linear-to-r from-white/90 to-white/70 backdrop-blur-xl rounded-2xl border border-white/50 p-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* Left: Stats */}
             <div className="flex items-center gap-8">

@@ -37,7 +37,7 @@ function ReplyControls({ msg, onUpdate }) {
         <div className="w-64">
           <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} className="w-full p-2 border rounded mb-2" rows={4} />
           <div className="flex gap-2">
-            <button onClick={handleSend} className="px-3 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded font-semibold">Send</button>
+            <button onClick={handleSend} className="px-3 py-2 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded font-semibold">Send</button>
             <button onClick={() => setReplyMode(false)} className="px-3 py-2 bg-gray-200 rounded">Cancel</button>
           </div>
         </div>
@@ -370,7 +370,7 @@ export default function AdminDashboard() {
 
   if (!user || user.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe]">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe]">
         <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl max-w-md w-full p-8 text-center border border-white/50">
           <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
           <p className="text-gray-600 mb-6">You need admin privileges to access this page.</p>
@@ -496,7 +496,7 @@ export default function AdminDashboard() {
 
             {/* Projects List */}
             <div>
-              <h3 className="text-3xl font-bold mb-6 text-gray-900 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">All Projects</h3>
+              <h3 className="text-3xl font-bold mb-6 bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">All Projects</h3>
               {loading ? (
                 <div className="text-center py-8">
                   <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>

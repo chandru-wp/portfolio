@@ -34,7 +34,7 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative min-h-screen py-28 bg-gradient-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] overflow-hidden"
+      className="relative min-h-screen py-28 bg-linear-to-br from-[#eef3ff] via-[#e8edff] to-[#dbeafe] overflow-hidden"
     >
       {/* --- BACKGROUND GLOWS --- */}
       <div className="absolute inset-0 -z-10">
@@ -51,12 +51,12 @@ export default function Skills() {
 
         {isAdmin && (
           <div className="text-right mb-4">
-            <button onClick={() => (window.location.pathname = '/admin')} className="px-3 py-2 text-sm bg-yellow-100 text-yellow-800 rounded-md">Edit Skills</button>
+            <button onClick={() => (window.location.pathname = '/#')} className="px-3 py-2 text-sm bg-yellow-100 text-yellow-800 rounded-md">Edit Skills</button>
           </div>
         )}
 
         {/* Title */}
-        <h2 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide drop-shadow-lg animate-fadeIn whitespace-normal break-words">
+        <h2 className="text-5xl md:text-6xl font-extrabold bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide drop-shadow-lg animate-fadeIn whitespace-normal wrap-break-word">
           Technologies & Skills
         </h2>
 
@@ -101,7 +101,7 @@ function SkillGroup({ title, skills }) {
   return (
     <div className="animate-fadeInUp">
       {/* Group Title */}
-      <h3 className="font-bold text-2xl mb-6 bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent whitespace-normal break-words">
+      <h3 className="font-bold text-2xl mb-6 bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent whitespace-normal wrap-break-word">
         {title}
       </h3>
 
@@ -110,7 +110,7 @@ function SkillGroup({ title, skills }) {
         {skills.map((skill, i) => (
           <span
             key={i}
-            className="px-6 py-3 rounded-full text-white font-bold text-sm md:text-base bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 shadow-lg border border-blue-400/30 hover:shadow-2xl hover:scale-110 transition-all duration-300"
+            className="px-6 py-3 rounded-full text-white font-bold text-sm md:text-base bg-linear-to-r from-blue-600 via-blue-700 to-indigo-600 shadow-lg border border-blue-400/30 hover:shadow-2xl hover:scale-110 transition-all duration-200"
           >
             {skill}
           </span>

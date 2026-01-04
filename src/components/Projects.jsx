@@ -50,20 +50,20 @@ export default function Projects() {
       <div className="relative max-w-7xl mx-auto px-6">
         <div className="text-center mb-8 relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="mx-auto sm:mx-0">
-            <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide drop-shadow-lg mb-2 whitespace-normal break-words">Featured Projects</h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-wide drop-shadow-lg mb-2 whitespace-normal wrap-break-word">Featured Projects</h2>
             <p className="text-base text-gray-700 max-w-2xl mx-auto sm:mx-0">From ideas to impact—Click a project to view details.</p>
           </div>
 
           <div className="flex items-center gap-3 ml-auto">
             <button
               onClick={() => setStyleMode("modern")}
-              className={`px-3 py-2 rounded-full font-medium transition ${styleMode === "modern" ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md" : "bg-white text-gray-700 border border-gray-200"}`}
+              className={`px-3 py-2 rounded-full font-medium transition ${styleMode === "modern" ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md" : "bg-white text-gray-700 border border-gray-300"}`}
             >
               Modern
             </button>
             <button
               onClick={() => setStyleMode("elegant")}
-              className={`px-3 py-2 rounded-full font-medium transition ${styleMode === "elegant" ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md" : "bg-white text-gray-700 border border-gray-200"}`}
+              className={`px-3 py-2 rounded-full font-medium transition ${styleMode === "elegant" ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md" : "bg-white text-gray-700 border border-gray-300"}`}
             >
               Elegant
             </button>
@@ -130,7 +130,9 @@ export default function Projects() {
                             <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold border-2 border-white shadow-md">{String(member).charAt(0).toUpperCase()}</div>
                           ))
                         ) : (
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold border-2 border-white shadow-md">C</div>
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold border-2 border-white shadow-md">
+                            {String(project.author || "U").charAt(0).toUpperCase()}
+                          </div>
                         )}
                       </div>
 
