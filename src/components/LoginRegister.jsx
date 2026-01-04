@@ -127,7 +127,7 @@ export default function LoginRegister({ onClose }) {
                     value={formData.username}
                     onChange={handleChange}
                     className="w-full pl-12 pr-4 py-4 bg-gradient-to-r from-slate-50 to-blue-50/30 border-2 border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-450 font-semibold focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 outline-none transition-all duration-200 shadow-sm hover:shadow-md"
-                    placeholder="demo"
+                    placeholder="Enter your username"
                     required
                   />
                 </div>
@@ -148,7 +148,7 @@ export default function LoginRegister({ onClose }) {
                     value={formData.password}
                     onChange={handleChange}
                     className="w-full pl-12 pr-4 py-4 bg-gradient-to-r from-slate-50 to-blue-50/30 border-2 border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-450 font-semibold focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 outline-none transition-all duration-200 shadow-sm hover:shadow-md"
-                    placeholder="••••••••"
+                    placeholder="Enter your password"
                     required
                   />
                 </div>
