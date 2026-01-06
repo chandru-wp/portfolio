@@ -14,12 +14,16 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     // Check if user is logged in (from localStorage)
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const storedToken = localStorage.getItem('authToken');
+    
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
+      setToken(storedToken);
     }
     setLoading(false);
   }, []);
@@ -29,12 +33,20 @@ export const AuthProvider = ({ children }) => {
       console.log('AuthContext: Attempting login for:', username);
       const response = await authAPI.login(username, password);
       console.log('AuthContext: Login response:', response);
+      
       const userData = {
-        username: response.username,
-        role: response.role
+        id: response.user.id,
+        username: response.user.username,
+        role: response.user.role
       };
-      setUser(userData);
+      
+      // Store JWT token and user data
+      localStorage.setItem('authToken', response.token);
       localStorage.setItem('user', JSON.stringify(userData));
+      
+      setToken(response.token);
+      setUser(userData);
+      
       return { success: true, data: response };
     } catch (error) {
       console.error('AuthContext: Login error:', error);
@@ -47,6 +59,20 @@ export const AuthProvider = ({ children }) => {
       console.log('AuthContext: Attempting registration for:', username, 'with role:', role);
       const response = await authAPI.register(username, password, role);
       console.log('AuthContext: Registration response:', response);
+      
+      // Automatically log in user after registration
+      const userData = {
+        id: response.user.id,
+        username: response.user.username,
+        role: response.user.role
+      };
+      
+      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      setToken(response.token);
+      setUser(userData);
+      
       return { success: true, data: response };
     } catch (error) {
       console.error('AuthContext: Registration error:', error);
@@ -55,17 +81,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setUser(null);
+    // Clear all auth data
+    localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
   };
 
   const value = {
     user,
+    token,
     login,
     register,
     logout,
     loading,
-    isAuthenticated: !!user,
+    isAuthenticated: !!user && !!token,
     isAdmin: user?.role === 'admin'
   };
 

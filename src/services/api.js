@@ -1,48 +1,67 @@
 // Use Render backend for both development and production
 const API_URL = 'https://portfolio-backend-ykvn.onrender.com';
 
+/**
+ * Get authorization headers with JWT token if available
+ */
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('authToken');
+  const headers = { 'Content-Type': 'application/json' };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
+};
+
 // Portfolio API
 export const portfolioAPI = {
   // Get all portfolios
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/portfolio`);
+    const response = await fetch(`${API_URL}/api/portfolio`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch portfolios');
     return response.json();
   },
 
   // Get portfolio by ID
   getById: async (id) => {
-    const response = await fetch(`${API_URL}/api/portfolio/${id}`);
+    const response = await fetch(`${API_URL}/api/portfolio/${id}`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch portfolio');
     return response.json();
   },
 
-  // Create new portfolio
+  // Create new portfolio (requires auth)
   create: async (data) => {
     const response = await fetch(`${API_URL}/api/portfolio`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to create portfolio');
     return response.json();
   },
 
-  // Update portfolio
+  // Update portfolio (requires auth)
   update: async (id, data) => {
     const response = await fetch(`${API_URL}/api/portfolio/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to update portfolio');
     return response.json();
   },
 
-  // Delete portfolio
+  // Delete portfolio (requires auth)
   delete: async (id) => {
     const response = await fetch(`${API_URL}/api/portfolio/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error('Failed to delete portfolio');
     return response.json();
@@ -52,14 +71,16 @@ export const portfolioAPI = {
 // Profile API
 export const profileAPI = {
   get: async () => {
-    const response = await fetch(`${API_URL}/api/profile`);
+    const response = await fetch(`${API_URL}/api/profile`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch profile');
     return response.json();
   },
   update: async (data) => {
     const response = await fetch(`${API_URL}/api/profile`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to update profile');
@@ -70,14 +91,16 @@ export const profileAPI = {
 // Skills API
 export const skillsAPI = {
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/skills`);
+    const response = await fetch(`${API_URL}/api/skills`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch skills');
     return response.json();
   },
   create: async (data) => {
     const response = await fetch(`${API_URL}/api/skills`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to create skill');
@@ -86,7 +109,7 @@ export const skillsAPI = {
   update: async (id, data) => {
     const response = await fetch(`${API_URL}/api/skills/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to update skill');
@@ -94,7 +117,8 @@ export const skillsAPI = {
   },
   delete: async (id) => {
     const response = await fetch(`${API_URL}/api/skills/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error('Failed to delete skill');
     return response.json();
@@ -104,14 +128,16 @@ export const skillsAPI = {
 // Experience API
 export const experienceAPI = {
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/experience`);
+    const response = await fetch(`${API_URL}/api/experience`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch experience');
     return response.json();
   },
   create: async (data) => {
     const response = await fetch(`${API_URL}/api/experience`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to create experience');
@@ -120,7 +146,7 @@ export const experienceAPI = {
   update: async (id, data) => {
     const response = await fetch(`${API_URL}/api/experience/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to update experience');
@@ -128,7 +154,8 @@ export const experienceAPI = {
   },
   delete: async (id) => {
     const response = await fetch(`${API_URL}/api/experience/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error('Failed to delete experience');
     return response.json();
@@ -138,14 +165,16 @@ export const experienceAPI = {
 // Education API
 export const educationAPI = {
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/education`);
+    const response = await fetch(`${API_URL}/api/education`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch education');
     return response.json();
   },
   create: async (data) => {
     const response = await fetch(`${API_URL}/api/education`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to create education');
@@ -154,7 +183,7 @@ export const educationAPI = {
   update: async (id, data) => {
     const response = await fetch(`${API_URL}/api/education/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to update education');
@@ -162,7 +191,8 @@ export const educationAPI = {
   },
   delete: async (id) => {
     const response = await fetch(`${API_URL}/api/education/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error('Failed to delete education');
     return response.json();
@@ -172,14 +202,16 @@ export const educationAPI = {
 // Messages API
 export const messagesAPI = {
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/messages`);
+    const response = await fetch(`${API_URL}/api/messages`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error('Failed to fetch messages');
     return response.json();
   },
   reply: async (id, data) => {
     const response = await fetch(`${API_URL}/api/messages/${id}/reply`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to reply to message');
@@ -188,7 +220,7 @@ export const messagesAPI = {
   create: async (data) => {
     const response = await fetch(`${API_URL}/api/messages`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Failed to create message');
@@ -196,7 +228,8 @@ export const messagesAPI = {
   },
   delete: async (id) => {
     const response = await fetch(`${API_URL}/api/messages/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error('Failed to delete message');
     return response.json();
@@ -255,13 +288,14 @@ export const authAPI = {
   changeRole: async (userId, role) => {
     const response = await fetch(`${API_URL}/api/change-role/${userId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ role })
     });
     if (!response.ok) throw new Error('Failed to change role');
     return response.json();
   }
 };
+
 // AI Assistant API
 export const aiAPI = {
   // Query AI for answers
@@ -269,7 +303,7 @@ export const aiAPI = {
     try {
       const response = await fetch(`${API_URL}/api/ai-query`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ question, context })
       });
       
